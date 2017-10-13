@@ -22,18 +22,18 @@ class Blog(db.Model):
 @app.route("/", methods=['POST','GET'])
 def blog():
     
-    if request.method =='POST':
-        #id = request.form[id]    
-        title = request.form['title']
-        body = request.form['body']
+    # check for query paramter named id
+    # if you find it render displayblog.html
+    
+    id =  request.args.get('id')
 
-        new_bolg = Blog(title,body)
-        db.session.add(new_bolg)
-        db.session.commit()
-        print("commit")
+    if id:
+        blog = Blog.query.get(id)
+        return render_template('displayblog.html',blog=blog)
+    # if no id paramter, then render main.html
+
 
     blogs=Blog.query.all() 
-    print("query........")   
     return render_template('main.html',blogs=blogs)   
         
 
@@ -41,8 +41,10 @@ def blog():
 def addblog():
     title_error =''
     body_error =''
+    print('WE MADE IT')
 
     if request.method == 'POST':
+        print('in POST part')
         title = request.form['title']
         body = request.form['body']
 
@@ -54,9 +56,16 @@ def addblog():
             add_blog = Blog(title,body)
             db.session.add(add_blog)
             db.session.commit()
-            print("addblog....")
-            return redirect('/')
-        
+            return redirect('/?id=' + str(add_blog.id))
+
+    #if request.args:
+    #    print('in request.args part')
+    #    print(request.args)
+    #    id_number = request.args['id']
+    #    post = Blog .query.filter_by(id=id_number).first()
+    #    return render_template('displayblog.html',blog=post)
+
+    # this displays the form   
     return render_template('addpost.html')  
 
 
@@ -64,7 +73,6 @@ def addblog():
 def displayblog():
     
     blog_id=request.args.get("id")
-    print("blog_id......... ",blog_id)
     blogs = Blog.query.all()
     if blog_id:
 
