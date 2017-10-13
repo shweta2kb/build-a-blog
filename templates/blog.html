@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+    <form action="/blog" method="post">
+
+        {% block content %}
+        
+            {% for blog in blogs %}
+                
+                <li>
+                        <a href="/displayblog">{{blog.title}}</a><br>
+                             {{blog.body}}
+                </li>
+                
+            {% endfor %}    
+         {% endblock %}   
+
+    </form>
